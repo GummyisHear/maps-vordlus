@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <meta charset="UTF-8">
+  <title>LeafletJS Kaart</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.3.1/leaflet-omnivore.min.js'></script>
+
+  <!-- Google Fonts: Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html">Avaleht</a>
+  <a href="leaflet.html">LeafletJS</a>
+  <a href="openlayers.html">OpenLayers</a>
+  <a href="vordlus.html">Võrdlus</a>
+</nav>
+
+<div class="content">
+  <h1>LeafletJS Kaart</h1>
+  <div id="map"></div>
+  <br><br>
+  <h2>Lisafunktsioonid</h2>
+  <ol>
+    <li>Koordinaadide näitmine klikkimisel</li>
+    <li>Mõõtkava (Scale control) lisanud (200m, 500ft)
+      <br>
+      <img src="image/mootkava.png" alt="Mõõtkava">
+    </li>
+  </ol>
+</div>
+
+<script>
+  var map = L.map('map').setView([59.437, 24.753], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+  var kmlLayer = omnivore.kml('location.kml')
+          .on('ready', function() {
+            map.fitBounds(kmlLayer.getBounds());
+          })
+          .addTo(map);
+
+  // koordinaadid alert
+  map.on('click', function(e) {
+    alert("Koordinaadid: " + e.latlng.lat.toFixed(5) + ", " + e.latlng.lng.toFixed(5));
+  });
+
+  // mõõtkava
+  L.control.scale().addTo(map);
+</script>
+</body>
+</html>

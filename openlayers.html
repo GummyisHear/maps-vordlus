@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <title>OpenLayers Kaart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+
+    <!-- Google Fonts: Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+    <a href="index.html">Avaleht</a>
+    <a href="leaflet.html">LeafletJS</a>
+    <a href="openlayers.html">OpenLayers</a>
+    <a href="vordlus.html">Võrdlus</a>
+</nav>
+
+<div class="content">
+    <h1>OpenLayers Kaart</h1>
+    <div id="map"></div>
+    <div>
+        <h2>Lisafunktsioonid</h2>
+        <ol>
+            <li>Täisekraan nupp <br>
+                <img src="image/taisekraan.png" alt="Täisekraan nupp"></li>
+
+            <li>Koordinaadide näitmine hiirte liikumiseks <br>
+                <img src="image/koord.png" alt="Koordinaadid"></li>
+        </ol>
+    </div>
+</div>
+
+<script>
+    var vectorSource = new ol.source.Vector({
+        url: 'location.kml',
+        format: new ol.format.KML({
+            extractStyles: true
+        })
+    });
+
+    var vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+    });
+
+    var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            vectorLayer
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([24.753, 59.437]),
+            zoom: 12
+        })
+    });
+
+    vectorSource.once('change', function() {
+        if (vectorSource.getState() === 'ready') {
+            var extent = vectorSource.getExtent();
+            map.getView().fit(extent, { padding: [50, 50, 50, 50] });
+        }
+    });
+
+    map.addControl(new ol.control.FullScreen());
+
+    var mousePositionControl = new ol.control.MousePosition({
+        coordinateFormat: ol.coordinate.createStringXY(4),
+        projection: 'EPSG:4326',
+        className: 'custom-mouse-position',
+        target: document.getElementById('mouse-position'),
+        undefinedHTML: '&nbsp;'
+    });
+    map.addControl(mousePositionControl);
+</script>
+</body>
+</html>
